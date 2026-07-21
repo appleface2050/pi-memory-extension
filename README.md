@@ -18,6 +18,7 @@ pi install npm:pi-memory-extension
 
 # Or from GitHub
 pi install git:git@github.com:appleface2050/pi-memory-extension.git
+pi install git:https://github.com/appleface2050/pi-memory-extension.git
 
 # Restart Pi or /reload
 ```
@@ -85,6 +86,18 @@ project/.pi/memory/
 ├── inbox/
 └── archive/
 ```
+
+## Memory Merge Behavior
+
+When both Global and Workspace memory are loaded, they are merged with the following priority:
+
+1. **Working state** (`state/current-task.md`) — always injected first, highest priority
+2. **Workspace Memory** — fully preserved, takes precedence over Global
+3. **Global Memory** — included if budget allows
+
+**File override by basename**: If Workspace has a file named `decisions.md`, it overrides *any* Global file with the same basename (e.g., `knowledge/decisions.md`), regardless of subdirectory. This ensures project-specific decisions take precedence over generic ones.
+
+If total content exceeds the character budget (default 8000), Workspace is fully preserved and Global is truncated from the tail.
 
 ## Design Document
 
