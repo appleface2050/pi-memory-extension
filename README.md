@@ -13,7 +13,10 @@
 ## Installation
 
 ```bash
-# From GitHub
+# From npm (recommended)
+pi install npm:pi-memory-extension
+
+# Or from GitHub
 pi install git:git@github.com:appleface2050/pi-memory-extension.git
 
 # Restart Pi or /reload
