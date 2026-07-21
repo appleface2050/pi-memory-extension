@@ -1,0 +1,13 @@
+# 不要将 node_modules 等环境文件提交
+node_modules/
+.env
+*.log
+
+# pi session 文件
+~/.pi/agent/sessions/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo

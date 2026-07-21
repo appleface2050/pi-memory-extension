@@ -1,0 +1,22 @@
+{
+  "name": "pi-memory-extension",
+  "version": "3.1.0",
+  "description": "A persistent memory extension for Pi Coding Agent. Markdown-based, human-curated, Global + Workspace dual-layer memory.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "memory",
+    "agent"
+  ],
+  "license": "MIT",
+  "pi": {
+    "extensions": [
+      "./pi-memory.ts"
+    ]
+  },
+  "files": [
+    "pi-memory.ts",
+    "docs/",
+    "README.md"
+  ]
+}
