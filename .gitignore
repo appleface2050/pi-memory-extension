@@ -1,12 +1,17 @@
-# 不要将 node_modules 等环境文件提交
+# Environment
 node_modules/
 .env
 *.log
+*.zip
+*.tar.gz
 
-# pi session 文件
+# Pi local config (workspace memory cache, etc)
+.pi/
+
+# Pi session files (stored globally, not in repo)
 ~/.pi/agent/sessions/
 
-# 编辑器
+# Editor
 .vscode/
 .idea/
 *.swp

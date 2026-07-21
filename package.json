@@ -6,9 +6,19 @@
     "pi-package",
     "pi-extension",
     "memory",
-    "agent"
+    "agent",
+    "pi-coding-agent"
   ],
   "license": "MIT",
+  "author": "appleface2050",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appleface2050/pi-memory-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/appleface2050/pi-memory-extension/issues"
+  },
+  "homepage": "https://github.com/appleface2050/pi-memory-extension#readme",
   "pi": {
     "extensions": [
       "./pi-memory.ts"
