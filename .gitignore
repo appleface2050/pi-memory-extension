@@ -5,11 +5,13 @@ node_modules/
 *.zip
 *.tar.gz
 
-# Pi local config (workspace memory cache, etc)
-.pi/
+# npm token (never commit)
+.npmrc
 
-# Pi session files (stored globally, not in repo)
-~/.pi/agent/sessions/
+# Pi config — exclude runtime, keep workspace memory
+.pi/*
+!.pi/memory/
+!.pi/memory/**
 
 # Editor
 .vscode/

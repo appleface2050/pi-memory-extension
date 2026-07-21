@@ -29,7 +29,7 @@ const DEFAULT_CONFIG: MemoryConfig = {
   globalDir: path.join(os.homedir(), ".pi", "memory"),
   workspaceDir: path.join(".pi", "memory"),
   priority: ["global", "workspace"],
-  globalAlwaysInject: ["user", "knowledge"],
+  globalAlwaysInject: ["user", "facts", "knowledge"],
 };
 
 // ──────────────────────────────────────────────
@@ -51,6 +51,8 @@ interface MemoryCache {
   globalRoot: string;
   workspaceRoot: string | null;
   files: MemoryFileEntry[];
+  /** state/current-task.md content, loaded separately */
+  stateContent: string;
 }
 
 // ──────────────────────────────────────────────
@@ -87,7 +89,7 @@ async function scanDir(
   try {
     const entries = await fs.readdir(dirPath, { withFileTypes: true });
     for (const entry of entries) {
-      if (entry.name.startsWith(".") || entry.name === "inbox" || entry.name === "archive") continue;
+      if (entry.name.startsWith(".") || entry.name === "inbox" || entry.name === "archive" || entry.name === "state") continue;
       const fullPath = path.join(dirPath, entry.name);
       if (entry.isFile() && entry.name.endsWith(".md")) {
         const stat = await fs.stat(fullPath);
@@ -161,9 +163,17 @@ function buildMemoryBlock(
   cache: MemoryCache,
   config: MemoryConfig,
 ): string | null {
-  if (cache.files.length === 0) return null;
+  if (cache.files.length === 0 && !cache.stateContent.trim()) return null;
 
   const parts: string[] = [];
+
+  // State section first (highest priority — current working context)
+  if (cache.stateContent.trim()) {
+    parts.push(`### Current Task State
+${cache.stateContent.trim()}
+`);
+  }
+
   parts.push("### Global Memory\n");
   for (const f of cache.files) {
     if (f.source === "global") parts.push(`**${f.relPath}**\n${f.injected}\n`);
@@ -224,10 +234,15 @@ export default function (pi: ExtensionAPI) {
       }
     }
 
-    // 3. Merge
+    // 3. Load state (separate from regular memory — working context, not knowledge)
+    const statePath = path.join(config.globalDir, "state", "current-task.md");
+    const stateRaw = await tryReadFile(statePath);
+    const stateContent = stateRaw?.trim() ?? "";
+
+    // 4. Merge
     const merged = mergeLayers(globalFiles, workspaceFiles);
 
-    cache = { globalRoot: config.globalDir, workspaceRoot, files: merged };
+    cache = { globalRoot: config.globalDir, workspaceRoot, files: merged, stateContent };
 
     ctx.ui.notify(
       `🧠 Pi Memory: ${globalFiles.length} global + ${workspaceFiles.length} workspace = ${merged.length} files`,
@@ -263,6 +278,7 @@ export default function (pi: ExtensionAPI) {
         `Global:  ${cache.globalRoot}`,
         `Workspace: ${cache.workspaceRoot ?? "none"}`,
         `Loaded files: ${cache.files.length}`,
+        cache.stateContent ? `State: current-task.md (${cache.stateContent.length} chars)` : `State: (empty)`,
         ``,
         `Files:`,
       ];
@@ -297,7 +313,13 @@ export default function (pi: ExtensionAPI) {
       }
 
       const merged = mergeLayers(globalFiles, workspaceFiles);
-      cache = { globalRoot: config.globalDir, workspaceRoot, files: merged };
+
+      // Reload state
+      const statePath = path.join(config.globalDir, "state", "current-task.md");
+      const stateRaw = await tryReadFile(statePath);
+      const stateContent = stateRaw?.trim() ?? "";
+
+      cache = { globalRoot: config.globalDir, workspaceRoot, files: merged, stateContent };
 
       ctx.ui.notify(`🔄 Pi Memory refreshed: ${merged.length} files`, "info");
     },

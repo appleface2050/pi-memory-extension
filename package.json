@@ -1,6 +1,6 @@
 {
   "name": "pi-memory-extension",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A persistent memory extension for Pi Coding Agent. Markdown-based, human-curated, Global + Workspace dual-layer memory.",
   "keywords": [
     "pi-package",
@@ -19,6 +19,9 @@
     "url": "https://github.com/appleface2050/pi-memory-extension/issues"
   },
   "homepage": "https://github.com/appleface2050/pi-memory-extension#readme",
+  "engines": {
+    "node": ">=20"
+  },
   "pi": {
     "extensions": [
       "./pi-memory.ts"
@@ -27,6 +30,7 @@
   "files": [
     "pi-memory.ts",
     "docs/",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ]
 }
